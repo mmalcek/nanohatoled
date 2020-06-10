@@ -62,11 +62,15 @@ func main() {
 	nanoHat.Text(3, 11, "TIME: ")
 	nanoHat.Pixel(124, 18, true) //X, Y, true=White, false=Black color. Single pixel
 
+	var timeBuffer string
 	for {
-		nanoHat.Rect(50, 11, 120, 22, false) // Clear time area before showing new
-		nanoHat.Text(50, 11, time.Now().Format("15:04:05"))
-		nanoHat.Send()
-		time.Sleep(300 * time.Millisecond)
+		if timeBuffer != time.Now().Format("15:04:05") {
+			timeBuffer = time.Now().Format("15:04:05")
+			nanoHat.Rect(50, 11, 120, 22, false) // Clear time area before showing new
+			nanoHat.Text(50, 11, time.Now().Format("15:04:05"))
+			nanoHat.Send()
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
