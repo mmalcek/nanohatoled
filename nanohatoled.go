@@ -85,7 +85,7 @@ func (nanoImg *NanoImg) Text(x int, y int, text string) {
 // LineH - create Horizontal line
 func (nanoImg *NanoImg) LineH(x int, y int, length int) {
 	px := x
-	for px <= length {
+	for px <= (length + x) {
 		nanoImg.image.Set(px, y, color.White)
 		px++
 	}
@@ -94,7 +94,7 @@ func (nanoImg *NanoImg) LineH(x int, y int, length int) {
 // LineV - create Vertical line
 func (nanoImg *NanoImg) LineV(x int, y int, length int) {
 	py := y
-	for py <= length {
+	for py <= (length + y) {
 		nanoImg.image.Set(x, py, color.White)
 		py++
 	}
