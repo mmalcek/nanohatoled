@@ -2,16 +2,18 @@
 
 ## GO lang package for NanoHat OLED display
 
-Display wiki description  [NanoHat OLED display](http://wiki.friendlyarm.com/wiki/index.php/NanoHat_OLED)
+Display wiki description [NanoHat OLED display](http://wiki.friendlyarm.com/wiki/index.php/NanoHat_OLED)
 
-* Very simple but easy to use package 
-* Allow rotate screen, display up to 6 lines of text in wide mode, basic shapes - line, rectangle
-* Written over one night just for basic purposes so please excuse brevity
-* Tested with NanoPi NEO 2
+- Very simple but easy to use
+- Allow rotate screen, display up to 6 lines of text in wide mode, basic shapes - line, rectangle
+- Written over one night just for basic purposes so please excuse brevity
+- Tested with NanoPi NEO 2
 
 ![example screen](https://github.com/mmalcek/nanohatoled/blob/master/nanohat.jpg?raw=true)
 
 ### Example
+
+- Start with "go get github.com/mmalcek/nanohatoled"
 
 ```go
 package main
@@ -62,9 +64,3 @@ func showTime(nanoImg *nanohatoled.NanoImg) {
 }
 
 ```
-
-
-
-
-
-
