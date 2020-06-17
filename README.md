@@ -29,18 +29,19 @@ import (
 )
 
 func main() {
-	nanoHat, err := nanohatoled.Init()
+	nanoHat, err := nanohatoled.Open()
 	if err != nil {
 		fmt.Println("error: ", err)
 	}
 	defer nanoHat.Close()
-	nanoHat.New(0) // Create new empty image, rotation 0,90,180,270.
+	nanoHat.New(90) // Create new empty image, rotation 0,90,180,270.
 
-	nanoHat.Text(10, 30, "INITIALIZING") // X, Y, string - write string to image
-	nanoHat.Send()                       // Send image to screen
-	time.Sleep(1000 * time.Millisecond)
+	nanoHat.Text(10, 30, "START") // X, Y, string - write string to image
+	nanoHat.Send()                // Send image to screen
+	time.Sleep(2000 * time.Millisecond)
 	nanoHat.Clear() // Clear Image buffer and screen
 
+	nanoHat.New(0) // Create new empty image, rotation 0,90,180,270.
 	cursorY := 25
 	for cursorY >= 0 {
 		nanoHat.Rect(3, cursorY, 125, cursorY+12, false) // Clear previous text
@@ -60,7 +61,7 @@ func main() {
 	go showProgress(nanoHat)
 
 	nanoHat.Text(3, 11, "TIME: ")
-	nanoHat.Pixel(124, 18, true) //X, Y, true=White, false=Black color. Single pixel
+	nanoHat.Pixel(124, 18, true) //X, Y, (0-black, 1White)
 
 	var timeBuffer string
 	for {
@@ -74,7 +75,7 @@ func main() {
 	}
 }
 
-func showProgress(nanoHat *nanohatoled.NanoImg) {
+func showProgress(nanoHat *nanohatoled.NanoOled) {
 	progress := 0
 	for {
 		progress = progress + 2
@@ -89,7 +90,6 @@ func showProgress(nanoHat *nanohatoled.NanoImg) {
 		time.Sleep(100 * time.Millisecond)
 	}
 }
-
 ```
 
 [![Nanohatoled](http://img.youtube.com/vi/dXVI3RB2pK0/0.jpg)](http://www.youtube.com/watch?v=dXVI3RB2pK0 "NanoHat OLED")
