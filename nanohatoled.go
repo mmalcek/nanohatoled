@@ -7,6 +7,10 @@ import (
 	"image"
 	"image/color"
 
+	"periph.io/x/periph/conn/gpio"
+	"periph.io/x/periph/conn/gpio/gpioreg"
+	"periph.io/x/periph/host"
+
 	"github.com/disintegration/imaging"
 	"github.com/pbnjay/pixfont"
 	"golang.org/x/exp/io/i2c"
@@ -37,10 +41,11 @@ type NanoOled struct {
 	rotation      int
 	rotationState bool
 	image         *image.NRGBA
+	Btn           [3]gpio.PinIO
 }
 
 // Init sets up the display for writing
-func (nanoOled *NanoOled) Init() (err error) {
+func (nanoOled *NanoOled) init() (err error) {
 	err = nanoOled.dev.Write([]byte{
 		0xae,
 		0x00 | 0x00, // row offset
@@ -87,11 +92,45 @@ func Open() (*NanoOled, error) {
 	buf := make([]byte, 128*(64/8)+1)
 	buf[0] = 0x40 // start frame of pixel data
 	oled := &NanoOled{dev: dev, w: 128, h: 64, buf: buf}
-	err = oled.Init()
+	err = oled.init()
 	if err != nil {
 		return nil, err
 	}
+	if _, err := host.Init(); err != nil {
+		fmt.Println(err)
+	}
+
+	// Initialize buttons:
+	oled.Btn[0] = gpioreg.ByName("0")
+	if oled.Btn[0] == nil {
+		return nil, fmt.Errorf("Failed to find GPIO0")
+	}
+	if err := oled.Btn[0].In(gpio.PullNoChange, gpio.RisingEdge); err != nil {
+		return nil, err
+	}
+
+	oled.Btn[1] = gpioreg.ByName("2")
+	if oled.Btn[1] == nil {
+		return nil, fmt.Errorf("Failed to find GPIO2")
+	}
+	if err := oled.Btn[1].In(gpio.PullNoChange, gpio.RisingEdge); err != nil {
+		return nil, err
+	}
+
+	oled.Btn[2] = gpioreg.ByName("3")
+	if oled.Btn[2] == nil {
+		return nil, fmt.Errorf("Failed to find GPIO3")
+	}
+	if err := oled.Btn[2].In(gpio.PullNoChange, gpio.RisingEdge); err != nil {
+		return nil, err
+	}
+
 	return oled, nil
+}
+
+// OpenBtn - Initialize buttons
+func OpenBtn() {
+
 }
 
 // On turns on the display if it is off.
@@ -119,6 +158,16 @@ func (nanoOled *NanoOled) New(rotation int) {
 	} else {
 		nanoOled.image = image.NewNRGBA(image.Rect(0, 0, 128, 64))
 	}
+}
+
+// Image - Open image (always full screen)
+func (nanoOled *NanoOled) Image(imagePath string) error {
+	imageData, err := imaging.Open(imagePath) // For read access.
+	if err != nil {
+		return fmt.Errorf("err-openImage: %s", err)
+	}
+	nanoOled.image = imaging.Fit(imageData, 128, 64, imaging.NearestNeighbor)
+	return nil
 }
 
 // Send - draws an image on the display buffer starting from x, y.
@@ -214,8 +263,12 @@ func (nanoOled *NanoOled) draw() error {
 }
 
 // Text - Write text to image
-func (nanoOled *NanoOled) Text(x int, y int, text string) {
-	pixfont.DrawString(nanoOled.image, x, y, text, color.White)
+func (nanoOled *NanoOled) Text(x int, y int, text string, textColor bool) {
+	tColor := color.White
+	if textColor == false {
+		tColor = color.Black
+	}
+	pixfont.DrawString(nanoOled.image, x, y, text, tColor)
 }
 
 // Pixel - create pixel in image
@@ -228,19 +281,27 @@ func (nanoOled *NanoOled) Pixel(x int, y int, pixColor bool) {
 }
 
 // LineH - create Horizontal line in image
-func (nanoOled *NanoOled) LineH(x int, y int, length int) {
+func (nanoOled *NanoOled) LineH(x int, y int, length int, lineColor bool) {
+	lColor := color.White
+	if lineColor == false {
+		lColor = color.Black
+	}
 	px := x
 	for px <= (length + x) {
-		nanoOled.image.Set(px, y, color.White)
+		nanoOled.image.Set(px, y, lColor)
 		px++
 	}
 }
 
 // LineV - create Vertical line in image
-func (nanoOled *NanoOled) LineV(x int, y int, length int) {
+func (nanoOled *NanoOled) LineV(x int, y int, length int, lineColor bool) {
+	lColor := color.White
+	if lineColor == false {
+		lColor = color.Black
+	}
 	py := y
 	for py <= (length + y) {
-		nanoOled.image.Set(x, py, color.White)
+		nanoOled.image.Set(x, py, lColor)
 		py++
 	}
 }

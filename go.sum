@@ -29,3 +29,6 @@ golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/tools v0.0.0-20200207183749-b753a1ba74fa/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
+periph.io/x/periph v1.0.0 h1:bwoS1Re14o6WinWbTuZuwX9Yh/5Rco4iNCl/CA+Kca8=
+periph.io/x/periph v3.6.4+incompatible h1:8FyXTbu9lcMVofz8mf+cj1pzTLN4V6EuPY2EF+DoJF4=
+periph.io/x/periph v3.6.4+incompatible/go.mod h1:EWr+FCIU2dBWz5/wSWeiIUJTriYv9v2j2ENBmgYyy7Y=
